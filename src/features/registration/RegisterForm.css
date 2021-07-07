@@ -1,0 +1,7 @@
+.registration-wrapper div {
+  display: flex;
+}
+
+.registration-wrapper div label {
+  min-width: 150px;
+}
