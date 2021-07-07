@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Input from "./components/Input";
 import "./App.css";
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
-  const [touched, setTouched] = React.useState<any>({});
+  const [touched, setTouched] = React.useState<any>({
+    username: false,
+    password: false,
+    confirmPass: false,
+  });
+  const [data, setData] = React.useState<any>({
+    username: null,
+    password: null,
+    confirmPass: null,
+  });
   const [errors, setErrors] = React.useState<any>({
     username: null,
     password: null,
@@ -14,11 +20,11 @@ function App() {
   });
 
   const isFormInvalid = Object.keys(errors).some(
-    (key: string) => !!errors[key]
+    (key: string) => !touched[key] || !!errors[key]
   );
 
   useEffect(() => {
-    if (touched.username && (!username || username.length < 8)) {
+    if (touched.username && (!data.username || data.username.length < 8)) {
       setErrors((prevErrors: any) => ({
         ...prevErrors,
         username: "username must be 8 characters and above",
@@ -30,7 +36,7 @@ function App() {
       }));
     }
 
-    if (touched.password && (!password || password.length < 8)) {
+    if (touched.password && (!data.password || data.password.length < 8)) {
       setErrors((prevErrors: any) => ({
         ...prevErrors,
         password: "password must be 8 characters and above",
@@ -42,7 +48,10 @@ function App() {
       }));
     }
 
-    if ((touched.password || touched.confirmPass) && password !== confirmPass) {
+    if (
+      (touched.password || touched.confirmPass) &&
+      data.password !== data.confirmPass
+    ) {
       setErrors((prevErrors: any) => ({
         ...prevErrors,
         confirmPass: "confirm password should be equal to the password",
@@ -53,46 +62,43 @@ function App() {
         confirmPass: null,
       }));
     }
-  }, [username, password, confirmPass, touched]);
+  }, [data.username, data.password, data.confirmPass, touched]);
+
+  const handleInputChange = (inputName: string, inputValue: string) => {
+    setTouched({
+      ...touched,
+      [inputName]: true,
+    });
+    setData({
+      ...data,
+      [inputName]: inputValue,
+    });
+  };
 
   return (
     <>
+      <div>{JSON.stringify(data)}</div>
       {Object.keys(errors).map((key: string) => {
         return <div>{errors[key]}</div>;
       })}
       <form>
         <Input
           label="Username"
+          inputName="username"
           inputType="text"
-          onInputChange={(inputValue: string) => {
-            setTouched({
-              ...touched,
-              username: true,
-            });
-            setUsername(inputValue);
-          }}
+          onInputChange={handleInputChange}
         />
         <Input
           label="Password"
+          inputName="password"
           inputType="password"
-          onInputChange={(inputValue: string) => {
-            setTouched({
-              ...touched,
-              password: true,
-            });
-            setPassword(inputValue);
-          }}
+          onInputChange={handleInputChange}
         />
         <Input
           label="Confirm password"
+          inputName="confirmPass"
           inputType="password"
-          onInputChange={(inputValue: string) => {
-            setTouched({
-              ...touched,
-              confirmPass: true,
-            });
-            setConfirmPass(inputValue);
-          }}
+          onInputChange={handleInputChange}
         />
         <button type="submit" disabled={isFormInvalid}>
           Submit

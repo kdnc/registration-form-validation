@@ -3,13 +3,15 @@ import React, { ChangeEvent, FC } from "react";
 interface InputProps {
   label: string;
   inputType: string;
+  inputName: string;
   inputValue?: string;
-  onInputChange: (e: string) => void;
+  onInputChange: (inputName: string, inputValue: string) => void;
 }
 
 const Input: FC<InputProps> = ({
   label,
   inputType,
+  inputName,
   inputValue,
   onInputChange,
 }: InputProps) => {
@@ -21,7 +23,7 @@ const Input: FC<InputProps> = ({
           type={inputType}
           value={inputValue}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            onInputChange(e.target.value);
+            onInputChange(inputName, e.target.value);
           }}
         ></input>
       </div>
