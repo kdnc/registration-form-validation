@@ -104,9 +104,11 @@ const RegisterForm: FC<RegisterFormProps> = () => {
 
   return (
     <>
-      {Object.keys(errors).map((key: string) => {
-        return <ul>{errors[key] && <li>{errors[key]}</li>}</ul>;
-      })}
+      <ul>
+        {Object.keys(errors).map((key: string) => {
+          return errors[key] ? <li key={key}>{errors[key]}</li> : null;
+        })}
+      </ul>
       <form className="registration-wrapper">
         <Input
           label="Username"
